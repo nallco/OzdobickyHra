@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15acfde2629befd48825d3d072b86ec7, type: 3}
+  m_Name: SnowdropSeed
+  m_EditorClassIdentifier: 
+  itemName: Snowdrop seed
+  itenDescription: Used for planting snowdrop plants
+  itemType: seed
+  itemIcon: {fileID: 1290390865, guid: 72a8379e3d76e424f8fa0e481da3a93f, type: 3}
+  targetPlant: {fileID: 11400000, guid: 0779c568c4c0d7c429175e351582c5eb, type: 2}

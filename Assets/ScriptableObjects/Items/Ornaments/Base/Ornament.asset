@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15acfde2629befd48825d3d072b86ec7, type: 3}
+  m_Name: Ornament
+  m_EditorClassIdentifier: 
+  itemName: BaseStar
+  itenDescription: Magic star used for encouragement of ornament growth
+  itemType: star
+  itemIcon: {fileID: -1416861045, guid: d326090970a5e464291cd4b691e207a0, type: 3}
+  targetPlant: {fileID: 0}
+  itemExtencion: {fileID: 0}
