@@ -15,6 +15,8 @@ public class StarMagic : MonoBehaviour
     public ItemDrop itemPrefab;
     public List<Ornament> ornamentTypes = new List<Ornament>();
     
+    public Animator animator;
+    public GameObject bubbles;
 
     [Header("base")]
     public Item starBase;
@@ -38,7 +40,9 @@ public class StarMagic : MonoBehaviour
 
     public void OpenMagic()
     {
+        bubbles.SetActive(true);
         magicOn = true;
+        animator.SetBool("MagicOn", true);
         foreach (SlotScript child in kotlikSlots)
         {
             child.gameObject.SetActive(true);
@@ -48,9 +52,12 @@ public class StarMagic : MonoBehaviour
 
     public void CloseMagic()
     {
+        bubbles.SetActive(false);
         magicOn = false;
+        animator.SetBool("MagicOn", false);
         foreach (SlotScript child in kotlikSlots)
         {
+            child.slotbase.color = UnityEngine.Color.white;
             child.gameObject.SetActive(false);
         }
         magicButton.gameObject.SetActive(false);
@@ -66,14 +73,41 @@ public class StarMagic : MonoBehaviour
 
     public void CreateStar()
     {
-        CloseMagic();
-        //pridat trigger pro anim
-        Ornament targetOrnament = GetOrnamentByRecipe();
+        List<SlotScript> incorrectItemInSlot = new List<SlotScript>(); 
+        foreach (SlotScript slot in kotlikSlots) //checkne ktery sloty jsou prazdne nebo se spatnym itemem
+        {
+            if (slot.itemInSlot == null || slot.itemInSlot.itemType != "produce")
+            {
+                incorrectItemInSlot.Add(slot);
+            }
+        }
 
-        ItemDrop hvezda = Instantiate(itemPrefab, kotlik.transform.position + new Vector3(0, 2, 0), Quaternion.identity) as ItemDrop;
-        hvezda.item = starBase;
-        hvezda.ChangeSprite(targetOrnament.starSprite);
-        magicButton.gameObject.SetActive(false);
+        if (incorrectItemInSlot.Count == 0) //zkontroluje jestli mame 4 suroviny
+        {
+            animator.SetTrigger("MagicFinish");
+            CloseMagic();
+            //pridat trigger pro anim
+            Ornament targetOrnament = GetOrnamentByRecipe();
+
+            ItemDrop hvezda = Instantiate(itemPrefab, kotlik.transform.position + new Vector3(0, 2, 0), Quaternion.identity) as ItemDrop;
+            hvezda.item = starBase;
+            hvezda.ChangeSprite(targetOrnament.starSprite);
+            magicButton.gameObject.SetActive(false);
+
+            hvezda.targetOrnament = targetOrnament;
+
+            foreach (SlotScript slot in kotlikSlots)
+            {
+                slot.RemoveItem();
+                slot.full = false;
+            }
+        } else
+        {
+            foreach (SlotScript slot in incorrectItemInSlot)
+            {
+                slot.FlashSlotRed();
+            }
+        }
     }
 
     Ornament.Color createdColor;
@@ -97,7 +131,7 @@ public class StarMagic : MonoBehaviour
             if (ingredient.itemName == "White poinsettia") whiteStar++;
             if (ingredient.itemName == "Snowdrop") snowDrop++;
         } //seèteny barvy + zjisteno jestli obsahuje obì hvìzdy
-        Debug.Log ("redstars = " + redStar + " " + "whiteStar = " + whiteStar);
+       // Debug.Log ("redstars = " + redStar + " " + "whiteStar = " + whiteStar);
         if ((redStar > 0) && (whiteStar > 0)) {
             createdColor = Ornament.Color.gold;
         } else if (redCount > 2) {

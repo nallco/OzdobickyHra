@@ -61,28 +61,33 @@ public class Inventory : MonoBehaviour
             activeSlot = hotbarSlots[next];
         }
     }
-    public void DropItem(Item item)
+    public void DropItem(Item item, Ornament ornData)
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player"); //tu by se dalo vyøešit zaokrouhlení, at item padne na grid
         GameObject myInstance = GameObject.Instantiate(itemPrefab, player.transform.position, Quaternion.identity) as GameObject;
         myInstance.GetComponent<ItemDrop>().item = item;
+        myInstance.GetComponent<ItemDrop>().targetOrnament = ornData;
 
     }
 
-    public void AddItemToInventory(Item item)
+    public void AddItemToInventory(Item item, Ornament ornament)
     {
         bool volneMisto = false;
 
         for (int i = 0; i < 8; i++) //projede cely hotbar
         {
-           if (hotbarSlots[i].itemInSlot == item)
+            // Debug.Log("hotbar.iteminslot = " + hotbarSlots[i].itemInSlot);
+            //Debug.Log("hotbarSlots[i].itemInSlot = " + hotbarSlots[i].itemInSlot + ", " + "item = " + item);
+            if (hotbarSlots[i].itemInSlot == item && item.unstuckable == false)
              {
+                hotbarSlots[i].ornamentData = ornament;
                 hotbarSlots[i].AddItemToStack(item);
                 volneMisto = true;
                 break;
              }
             else if (hotbarSlots[i].itemInSlot == null)
             {
+                hotbarSlots[i].ornamentData = ornament;
                 hotbarSlots[i].AddItem(item);
                 volneMisto = true;
                 break;
@@ -97,6 +102,7 @@ public class Inventory : MonoBehaviour
             {
                 if (backpackSlots[i].itemInSlot == null)
                 {
+                    backpackSlots[i].ornamentData = ornament;
                     backpackSlots[i].AddItem(item);
                     volneMisto = true;
                     break;
@@ -109,6 +115,49 @@ public class Inventory : MonoBehaviour
             } 
         } 
         }
+
+    public void AddItemToInventory(Item item)
+    {
+        bool volneMisto = false;
+
+        for (int i = 0; i < 8; i++) //projede cely hotbar
+        {
+            // Debug.Log("hotbar.iteminslot = " + hotbarSlots[i].itemInSlot);
+            //Debug.Log("hotbarSlots[i].itemInSlot = " + hotbarSlots[i].itemInSlot + ", " + "item = " + item);
+            if (hotbarSlots[i].itemInSlot == item && item.unstuckable == false)
+            {
+                hotbarSlots[i].AddItemToStack(item);
+                volneMisto = true;
+                break;
+            }
+            else if (hotbarSlots[i].itemInSlot == null)
+            {
+                hotbarSlots[i].AddItem(item);
+                volneMisto = true;
+                break;
+            }
+        }
+
+        if (volneMisto) //pokud nasel misto v hotbaru jinak...
+        { }
+        else
+        {
+            for (int i = 0; i < backpackSlots.Count; i++) // projede cely inventar, checkuje misto
+            {
+                if (backpackSlots[i].itemInSlot == null)
+                {
+                    backpackSlots[i].AddItem(item);
+                    volneMisto = true;
+                    break;
+                }
+            }
+            if (volneMisto == false) //jestli nenajde misto ani v backpacku
+            {
+                Debug.Log("neni misto v inventar");
+                inventoryFull = true;
+            }
+        }
+    }
     public void ActivateItem()
     {
             switch (activeSlot.itemInSlot.itemType)

@@ -11,6 +11,7 @@ public class ItemDrop : MonoBehaviour
     private string itemType;
     public TileBase dirt;
     private MapManager mapM;
+    public Ornament targetOrnament;
 
     private void Start()
     {
@@ -28,9 +29,10 @@ public class ItemDrop : MonoBehaviour
             //pridat parametry ozdoby (shape, color, pattern)
             if (itemType == "ornament")
             {
-                //GetComponent<SpriteRenderer>().sprite = ornamentS.FindOrnamentType().sprite;
+                GetComponent<SpriteRenderer>().sprite = targetOrnament.sprite;
             } else
             {
+                GetComponent<SpriteRenderer>().sprite = targetOrnament.starSprite;
             }
             
         }
@@ -47,7 +49,13 @@ public class ItemDrop : MonoBehaviour
     }
     public void PickUp()
     {
-        inventory.AddItemToInventory(item);
+        if (targetOrnament != null)
+        {
+            inventory.AddItemToInventory(item, targetOrnament);
+        } else
+        {
+            inventory.AddItemToInventory(item);
+        }
         if (inventory.inventoryFull == false)
         {
             Destroy(this.gameObject);

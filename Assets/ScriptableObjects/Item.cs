@@ -12,6 +12,7 @@ public class Item : ScriptableObject
     public string itenDescription;
     public string itemType;
     public Sprite itemIcon;
+    public bool unstuckable;
 
     [Header("Ingredients")]
     public Ornament.Color color;

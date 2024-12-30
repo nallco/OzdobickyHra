@@ -19,6 +19,8 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public bool cauldronSlot = false;
     public bool full = false;
 
+    public Ornament ornamentData;
+
     void Start()
     {
         inventoryScript = FindAnyObjectByType<Inventory>();
@@ -28,7 +30,7 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
       if (itemInSlot != null & hover & Input.GetMouseButtonDown(1)) {
             Debug.Log("vyhozeno 1x " + itemInSlot.name);
-            inventoryScript.DropItem(itemInSlot);
+            inventoryScript.DropItem(itemInSlot, ornamentData);
             RemoveItem();
         }
     }
@@ -48,8 +50,56 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             itemCount = 1;
         }
         itemPlace.SetActive(true);
-        itemPlace.GetComponent<Image>().sprite = itemInSlot.itemIcon;
+        if (itemPlace.GetComponent<Image>().sprite == null)
+        {
+            Debug.Log("null");
+        } else
+        {
+            itemPlace.GetComponent<Image>().sprite = itemInSlot.itemIcon;
+        }
+        if (ornamentData != null)
+        {
+            if (it.itemType == "star")
+            {
+                itemPlace.GetComponent<Image>().sprite = ornamentData.starSprite;
+            }
+            else if (it.itemType == "ornament")
+            {
+                itemPlace.GetComponent<Image>().sprite = ornamentData.sprite;
+            }
+        }
     }
+
+    public void AddItem(Item it, Ornament ornament)
+    {
+        if (itemInSlot == null)
+        {
+            itemInSlot = it;
+            itemCount = 1;
+        }
+        itemPlace.SetActive(true);
+        if (itemPlace.GetComponent<Image>().sprite == null)
+        {
+            Debug.Log("null");
+        }
+        else
+        {
+            itemPlace.GetComponent<Image>().sprite = itemInSlot.itemIcon;
+        }
+        if (ornament != null)
+        {
+            if (it.itemType == "star")
+            {
+                itemPlace.GetComponent<Image>().sprite = ornament.starSprite;
+            }
+            else if (it.itemType == "ornament")
+            {
+                itemPlace.GetComponent<Image>().sprite = ornament.sprite;
+            }
+        }
+        UpdateSprite();
+    }
+
     public void AddItemToStack(Item it)
     {
         itemCount++;
@@ -64,6 +114,7 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (itemCount == 0)
         {
             itemInSlot = null;
+            ornamentData = null;
             itemPlace.SetActive(false);
             itemCountText.gameObject.SetActive(false);
         } else if (itemCount == 1)
@@ -94,26 +145,51 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void AddToCauldron()
     {
+
+        inventoryScript = FindAnyObjectByType<Inventory>();
         SlotScript activeSlot = inventoryScript.activeSlot;
-        if (activeSlot.itemInSlot != null) // v inventari ANO //
+        if ((activeSlot.itemInSlot == null) || (activeSlot.itemInSlot.itemType != "star") || (activeSlot.itemInSlot.itemType != "ornament"))
+        {
+            if (activeSlot.itemInSlot != null) // v inventari ANO //
         {
             if (full == false) //v inventari ANO a v kotliku NE =======> z inv do kotliku
             {
                 itemPlace.SetActive(true);
                 AddItem(activeSlot.itemInSlot);
                 itemInSlot = activeSlot.itemInSlot;
+                if (activeSlot.ornamentData != null)
+                {
+                    ornamentData = activeSlot.ornamentData;
+                }
                 activeSlot.RemoveItem();
                 full = true;
             }
             else if (inventoryScript.inventoryFull == false) //v inventari ANO a v kotliku ANO ======> vymena
             {
                 Item itemNaVymenu = itemInSlot; //ukladam item v tomto slotu
+                Ornament itemNaVymenuOrnament = ornamentData; //ukladam ornamentData v tomto slotu
+                Debug.Log("itemInSlot = " + itemInSlot + " ornamentData = " + ornamentData);
                 itemInSlot = null;
+                ornamentData = null;
+                /*
+                if (activeSlot.ornamentData != null)
+                {
+                    ornamentData = activeSlot.ornamentData;
+                }
+                if (itemNaVymenuOrnament != null)
+                {
+                    Debug.Log("itemnavymorn = " + itemNaVymenuOrnament);
+                    Debug.Log("menim ornament data do inv");
+                    activeSlot.ornamentData = itemNaVymenuOrnament;
+                }*/
+                itemInSlot = activeSlot.itemInSlot;
+                ornamentData = activeSlot.ornamentData;
                 AddItem(activeSlot.itemInSlot);
                 //itemInSlot = activeSlot.itemInSlot;
                 //itemPlace.GetComponent<Image>().sprite = itemInSlot.itemIcon;
-                inventoryScript.AddItemToInventory(itemNaVymenu); //pridama do inventare item v tomto slotu
+                //inventoryScript.AddItemToInventory(itemNaVymenu); //pridama do inventare item v tomto slotu
                 activeSlot.RemoveItem(); //odebiram item z aktivniho slotu
+                activeSlot.AddItem(itemNaVymenu, itemNaVymenuOrnament);
             }
             else
             {
@@ -121,12 +197,44 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             }
         } else if ((full == true) && (itemInSlot != null)) //v inventari NE a v kotliku ANO
         {
+
             activeSlot.AddItem(itemInSlot);
+            if (ornamentData != null)
+            {
+                activeSlot.ornamentData = ornamentData;
+            }
             full = false;
             RemoveItem();
 
         } else //v obou NE
         {
+        }
+        } else
+        {
+            Debug.Log("hvezda nejde presunout rip");
+        }
+        UpdateSprite();
+    }
+
+    public void FlashSlotRed()
+    {
+        StartCoroutine(FlashRed());
+    }
+        IEnumerator FlashRed() 
+    {
+        slotbase.color = Color.red;
+        yield return new WaitForSeconds(2);
+        slotbase.color = Color.white;
+        }
+
+    void UpdateSprite()
+    {
+        if (itemInSlot.itemType == "ornament")
+        {
+            itemPlace.GetComponent<Image>().sprite = ornamentData.sprite;
+        } else if (itemInSlot.itemType == "star")
+        {
+            itemPlace.GetComponent<Image>().sprite = ornamentData.starSprite;
         }
     }
 

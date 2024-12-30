@@ -16,6 +16,7 @@ MonoBehaviour:
   itenDescription: 
   itemType: star
   itemIcon: {fileID: -1416861045, guid: d326090970a5e464291cd4b691e207a0, type: 3}
+  unstuckable: 1
   color: 0
   targetPlant: {fileID: 0}
   itemExtencion: {fileID: 0}
