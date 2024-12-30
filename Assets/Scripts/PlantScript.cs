@@ -16,6 +16,7 @@ public class PlantScript : MonoBehaviour
         inventory = FindAnyObjectByType<Inventory>();
         mapManager = FindAnyObjectByType<MapManager>();
         GetComponent<SpriteRenderer>().sprite = plant.stage[0];
+        SoundManager.Instance.PlaySound2D("Plant");
         StartCoroutine("Grow");
     }
 

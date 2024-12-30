@@ -14,6 +14,7 @@ public class GiftScript : MonoBehaviour
     private void OnMouseDown()
     {
         Debug.Log("darek!");
+        SoundManager.Instance.PlaySound2D("PickUp");
         foreach (var item in giftContents)
         {
             inventory.AddItemToInventory(item);

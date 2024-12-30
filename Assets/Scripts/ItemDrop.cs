@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
+//using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -49,6 +49,7 @@ public class ItemDrop : MonoBehaviour
     }
     public void PickUp()
     {
+        SoundManager.Instance.PlaySound2D("PickUp");
         if (targetOrnament != null)
         {
             inventory.AddItemToInventory(item, targetOrnament);

@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
+//using static UnityEditor.Progress;
 
 public class Inventory : MonoBehaviour
 {
@@ -63,6 +63,7 @@ public class Inventory : MonoBehaviour
     }
     public void DropItem(Item item, Ornament ornData)
     {
+        SoundManager.Instance.PlaySound2D("PickUp");
         GameObject player = GameObject.FindGameObjectWithTag("Player"); //tu by se dalo vyøešit zaokrouhlení, at item padne na grid
         GameObject myInstance = GameObject.Instantiate(itemPrefab, player.transform.position, Quaternion.identity) as GameObject;
         myInstance.GetComponent<ItemDrop>().item = item;

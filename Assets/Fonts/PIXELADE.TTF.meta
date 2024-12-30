@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: f17066b12139a864b99f10393f083c59
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 200
+  forceTextureCase: -1
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Pixelade
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 9589c9858a6c7564f9a0b858e642a683, type: 3}
+  customCharacters: 
+  fontRenderingMode: 2
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

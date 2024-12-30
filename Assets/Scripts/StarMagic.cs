@@ -85,6 +85,7 @@ public class StarMagic : MonoBehaviour
         if (incorrectItemInSlot.Count == 0) //zkontroluje jestli mame 4 suroviny
         {
             animator.SetTrigger("MagicFinish");
+            SoundManager.Instance.PlaySound2D("Magic");
             CloseMagic();
             //pridat trigger pro anim
             Ornament targetOrnament = GetOrnamentByRecipe();
